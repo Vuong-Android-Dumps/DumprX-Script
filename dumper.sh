@@ -834,7 +834,7 @@ for p in $PARTITIONS; do
 						rm -fv "$p".img > /dev/null 2>&1
 					else
 						echo "Extraction via 7zz failed!"
-                                                echo "Couldn't extract $p partition via 7zz. Using mount loop"
+                        echo "Couldn't extract $p partition via 7zz. Using mount loop"
 						sudo mount -o loop -t auto "$p".img "$p"
 						mkdir "${p}_"
 						sudo cp -rf "${p}/"* "${p}_"
