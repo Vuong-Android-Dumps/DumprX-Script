@@ -651,6 +651,7 @@ elif ${BIN_7ZZ} l -ba "${FILEPATH}" | grep -q payload.bin 2>/dev/null || [[ $(fi
 	printf "AB OTA Payload Detected\n"
 	${BIN_7ZZ} e -y "${FILEPATH}" -o"${TMPDIR}" 2>/dev/null >> "${TMPDIR}"/zip.log
 	${PAYLOAD_EXTRACTOR} payload.bin >/dev/null
+	mv extracted_*/* .
 	rm payload.bin
 elif ${BIN_7ZZ} l -ba "${FILEPATH}" | grep ".*.rar\|.*.zip\|.*.7z\|.*.tar$" 2>/dev/null || [[ $(find "${TMPDIR}" -type f \( -name "*.rar" -o -name "*.zip" -o -name "*.7z" -o -name "*.tar" \) | wc -l) -ge 1 ]]; then
 	printf "Rar/Zip/7Zip/Tar Archived Firmware Detected\n"
