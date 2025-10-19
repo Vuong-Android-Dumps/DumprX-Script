@@ -177,7 +177,9 @@ else
 		else
 			if echo "${URL}" | grep -q "1drv.ms"; then URL=${URL/ms/ws}; fi
 			aria2c -x16 -s8 --console-log-level=warn --summary-interval=0 --check-certificate=false "${URL}" || {
-				wget -q --show-progress --progress=bar:force --no-check-certificate "${URL}" || exit 1
+			    aria2c -x16 -s8 --console-log-level=warn --summary-interval=0 --check-certificate=false "${URL}" || {
+				    wget -q --show-progress --progress=bar:force --no-check-certificate "${URL}" || exit 1
+				}
 			}
 		fi
 		unset URL
