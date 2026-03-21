@@ -135,6 +135,7 @@ fi
 
 # Set Names of Downloader Utility Programs
 MEGAMEDIADRIVE_DL="${UTILSDIR}"/downloaders/mega-media-drive_dl.sh
+RANDOM=$(date +%s)
 
 # EROFS
 FSCK_EROFS=${UTILSDIR}/bin/fsck.erofs
@@ -1227,8 +1228,8 @@ otaver=$(
     get_prop "ro.build.version.ota" {vendor/euclid/product,oppo_product,system,system/system}/build*.prop ||
     get_prop "ro.build.fota.version" {system,system/system}/build*.prop
 )
-[[ -n "$otaver" && -z "$fingerprint" ]] && branch=$(echo "$otaver" | tr ' ' '-')
-branch=${branch:-$(echo "$description" | tr ' ' '-')}
+[[ -n "$otaver" && -z "$fingerprint" ]] && branch=$(echo "$otaver-${RANDOM}" | tr ' ' '-')
+branch=${branch:-$(echo "$description-${RANDOM}" | tr ' ' '-')}
 
 if [[ "$PUSH_TO_GITLAB" = true ]]; then
 	rm -rf .github_token
