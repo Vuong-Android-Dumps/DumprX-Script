@@ -962,21 +962,20 @@ for p in $PARTITIONS; do
 	if ! echo "${p}" | grep -q "boot\|recovery\|dtbo\|vendor_boot\|tz"; then
 		if [[ -e "$p.img" ]]; then
 			mkdir "$p" 2> /dev/null || rm -rf "${p:?}"/*
-			echo "Extracting $p partition..."
-			${BIN_7ZZ} x -snld "$p".img -y -o"$p"/ > /dev/null 2>&1
+			echo "Trying to extract $p partition via fsck.erofs."
+			"${FSCK_EROFS}" --extract="$p" "$p".img
 			if [ $? -eq 0 ]; then
 				rm "$p".img > /dev/null 2>&1
 			else
-				# Handling EROFS Images, which can't be handled by 7z.
-				echo "Extraction Failed my 7z"
 				if [ -f $p.img ] && [ $p != "modem" ]; then
-					echo "Couldn't extract $p partition by 7z. Using fsck.erofs."
+					echo "Extraction via fsck.erofs failed, extracting $p partition via 7zz"
 					rm -rf "${p}"/*
-					"${FSCK_EROFS}" --extract="$p" "$p".img
+					${BIN_7ZZ} x -snld "$p".img -y -o"$p"/ > /dev/null 2>&1
 					if [ $? -eq 0 ]; then
 						rm -fv "$p".img > /dev/null 2>&1
 					else
-						echo "Couldn't extract $p partition by fsck.erofs. Using mount loop"
+					    echo "Extraction via 7zz failed!"
+						echo "Couldn't extract $p partition via 7zz. Using mount loop"
 						sudo mount -o loop -t auto "$p".img "$p"
 						mkdir "${p}_"
 						sudo cp -rf "${p}/"* "${p}_"
