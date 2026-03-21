@@ -1379,31 +1379,36 @@ commit_and_push(){
 		"system"
 	)
 
-	git lfs install
-	[ -e ".gitattributes" ] || find . -type f -not -path ".git/*" -size +100M -exec git lfs track {} \;
+	git lfs install > /dev/null 2>&1
+	[ -e ".gitattributes" ] || find . -type f -not -path ".git/*" -size +100M -exec git lfs track {} \; > /dev/null 2>&1
 	[ -e ".gitattributes" ] && {
-		git add ".gitattributes"
-		git commit -sm "Setup Git LFS"
-		git push -u origin "${branch}"
+	    echo "Setup Git LFS..."
+		git add ".gitattributes" > /dev/null 2>&1
+		git commit -sm "Setup Git LFS" > /dev/null 2>&1
+		git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 	}
 
-	git add $(find -type f -name '*.apk')
-	git commit -sm "Add apps for ${description}"
-	git push -u origin "${branch}"
+    echo "Dumping apps..."
+	git add $(find -type f -name '*.apk') > /dev/null 2>&1
+	git add $(find -type f -name '*.apk.*') > /dev/null 2>&1
+	git commit -sm "Add apps for ${description}" > /dev/null 2>&1
+	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 
 	for i in "${DIRS[@]}"; do
-		[ -d "${i}" ] && git add "${i}"
-		[ -d system/"${i}" ] && git add system/"${i}"
-		[ -d system/system/"${i}" ] && git add system/system/"${i}"
-		[ -d vendor/"${i}" ] && git add vendor/"${i}"
+	    echo "Dumping ${i}..."
+		[ -d "${i}" ] && git add "${i}" > /dev/null 2>&1
+		[ -d system/"${i}" ] && git add system/"${i}" > /dev/null 2>&1
+		[ -d system/system/"${i}" ] && git add system/system/"${i}" > /dev/null 2>&1
+		[ -d vendor/"${i}" ] && git add vendor/"${i}" > /dev/null 2>&1
 
-		git commit -sm "Add ${i} for ${description}"
-		git push -u origin "${branch}"
+		git commit -sm "Add ${i} for ${description}" > /dev/null 2>&1
+		git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 	done
 
-	git add .
-	git commit -sm "Add extras for ${description}"
-	git push -u origin "${branch}"
+    echo "Dumping extras..."
+	git add . > /dev/null 2>&1
+	git commit -sm "Add extras for ${description}" > /dev/null 2>&1
+	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 }
 
 split_files(){
