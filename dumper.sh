@@ -497,7 +497,7 @@ elif ${BIN_7ZZ} l -ba "${FILEPATH}" | grep system | grep chunk | grep -q -v ".*\
 		romchunk=$(find . -maxdepth 1 -type f -name "*${partition}*chunk*" | cut -d'/' -f'2-' | sort)
 		if echo "${romchunk}" | grep -q "sparsechunk"; then
 			if [[ ! -f "${partition}".img ]]; then
-				"${SIMG2IMG}" "${romchunk}" ${partition}.img.raw 2>/dev/null
+				"${SIMG2IMG}" *${partition}*chunk* ${partition}.img.raw 2>/dev/null
 				mv ${partition}.img.raw ${partition}.img
 			fi
 			rm -rf -- *${partition}*chunk* 2>/dev/null
