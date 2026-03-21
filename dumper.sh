@@ -950,6 +950,9 @@ if [[ -f dtbo.img ]]; then
     done
 fi
 
+rm super.img
+ls -lAog
+
 # Extract Partitions
 for p in $PARTITIONS; do
 	if ! echo "${p}" | grep -q "boot\|recovery\|dtbo\|vendor_boot\|tz"; then
