@@ -486,21 +486,21 @@ elif ${BIN_7ZZ} l -ba "${FILEPATH}" | grep system | grep chunk | grep -q -v ".*\
 	printf "Chunk Detected.\n"
 	for partition in ${PARTITIONS}; do
 		if [[ -f "${FILEPATH}" ]]; then
-			foundpartitions=$(${BIN_7ZZ} l -ba "${FILEPATH}" | gawk '{print $NF}' | grep "${partition}".img)
-			${BIN_7ZZ} e -y -- "${FILEPATH}" *"${partition}"*chunk* */*"${partition}"*chunk* "${foundpartitions}" dummypartition 2>/dev/null >> "${TMPDIR}"/zip.log
+			foundpartitions=$(${BIN_7ZZ} l -ba "${FILEPATH}" | gawk '{print $NF}' | grep ${partition}.img)
+			${BIN_7ZZ} e -y -- "${FILEPATH}" *${partition}*chunk* */*${partition}*chunk* "${foundpartitions}" dummypartition 2>/dev/null >> "${TMPDIR}"/zip.log
 		else
 			find "${TMPDIR}" -type f -name "*${partition}*chunk*" -exec mv {} . \; 2>/dev/null
 			find "${TMPDIR}" -type f -name "*${partition}*.img" -exec mv {} . \; 2>/dev/null
 		fi
-		rm -f -- *"${partition}"_b*
-		rm -f -- *"${partition}"_other*
+		rm -f -- *${partition}_b*
+		rm -f -- *${partition}_other*
 		romchunk=$(find . -maxdepth 1 -type f -name "*${partition}*chunk*" | cut -d'/' -f'2-' | sort)
 		if echo "${romchunk}" | grep -q "sparsechunk"; then
 			if [[ ! -f "${partition}".img ]]; then
-				"${SIMG2IMG}" "${romchunk}" "${partition}".img.raw 2>/dev/null
-				mv "${partition}".img.raw "${partition}".img
+				"${SIMG2IMG}" "${romchunk}" ${partition}.img.raw 2>/dev/null
+				mv ${partition}.img.raw ${partition}.img
 			fi
-			rm -rf -- *"${partition}"*chunk* 2>/dev/null
+			rm -rf -- *${partition}*chunk* 2>/dev/null
 		fi
 	done
 elif ${BIN_7ZZ} l -ba "${FILEPATH}" | gawk '{print $NF}' | grep -q "system_new.img\|^system.img\|\/system.img\|\/system_image.emmc.img\|^system_image.emmc.img" 2>/dev/null || [[ $(find "${TMPDIR}" -type f -name "system*.img" | wc -l) -ge 1 ]]; then
