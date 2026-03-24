@@ -1149,6 +1149,7 @@ fingerprint=$(
 # 'codename' property (e.g. caiman)
 codename=$(
     get_prop "ro.product.odm.device"        odm/etc/build*.prop                                 ||
+	get_prop "ro.product.board"             odm/etc/build*.prop                                 ||
     get_prop "ro.product.odm.device"        system/system/build_default.prop                    ||
     get_prop "ro.product.device"            odm/etc/fingerprint/build.default.prop              ||
     get_prop "ro.product.device"            my_manifest/build*.prop                             ||
