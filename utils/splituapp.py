@@ -9,52 +9,44 @@
 from __future__ import print_function
 
 import os
+import re
 import sys
 import string
 import struct
-import argparse
+from subprocess import check_output
 
-parser = argparse.ArgumentParser(description="Split UPDATE.APP file into img files", add_help=False)
-required = parser.add_argument_group('Required')
-required.add_argument("-f", "--filename", required=True, help="Path to update.app file")
-optional = parser.add_argument_group('Optional')
-optional.add_argument("-h", "--help", action="help", help="show this help message and exit")
-optional.add_argument("-l", "--list", nargs="*", metavar=('img1', 'img2'), help="List of img files to extract")
-args = parser.parse_args()
+def extract(source, flist):
+	def cmd(command):
+		try:
+			test1 = check_output(command)
+			test1 = test1.strip().decode()
+		except:
+			test1 = ''
 
-source = args.filename
+		return test1
 
-flist = None
-found = False
+	bytenum = 4
+	outdir = 'output'
+	img_files = []
 
-if args.list:
-	flist = args.list
-
-def existf(filename):
 	try:
-		if os.path.isdir(filename):
-			return 2
-		if os.stat(filename).st_size > 0:
-			return 0
-		else:
-			return 1
-	except OSError:
-		return 2
+		os.makedirs(outdir)
+	except:
+		pass
 
-bytenum = 4
+	py2 = None
+	if int(''.join(str(i) for i in sys.version_info[0:2])) < 30:
+		py2 = 1
 
-py2 = None
-if int(''.join(str(i) for i in sys.version_info[0:2])) < 30:
-	py2 = 1
- 
-with open(source, 'rb') as f:
-	while True:
-		i = f.read(bytenum)
-		if not i:
-			break
-		if i != b'\x55\xAA\x5A\xA5':
-			continue
-		else:
+	with open(source, 'rb') as f:
+		while True:
+			i = f.read(bytenum)
+
+			if not i:
+				break
+			elif i != b'\x55\xAA\x5A\xA5':
+				continue
+
 			headersize = f.read(bytenum)
 			headersize = list(struct.unpack('<L', headersize))[0]
 			f.seek(16, 1)
@@ -62,6 +54,7 @@ with open(source, 'rb') as f:
 			filesize = list(struct.unpack('<L', filesize))[0]
 			f.seek(32, 1)
 			filename = f.read(16)
+
 			try:
 				filename = str(filename.decode())
 				filename = ''.join(f for f in filename if f in string.printable).lower()
@@ -70,28 +63,66 @@ with open(source, 'rb') as f:
 
 			f.seek(22, 1)
 			crcdata = f.read(headersize - 98)
-			
-			getimg = None
-			if (flist and filename in flist) or (not flist):
-				getimg = 1
-				found = True
-			
-			if getimg:
-				imgdata = f.read(filesize)
+
+			if not flist or filename in flist:
+				if filename in img_files:
+					filename = filename+'_2'
+
+				print('Extracting '+filename+'.img ...')
+
+				chunk = 10240
+
 				try:
-					print('Extracting '+filename+'.img ...')
-					with open(filename+'.img', 'wb') as o:
-						o.write(imgdata)
+					with open(outdir+os.sep+filename+'.img', 'wb') as o:
+						while filesize > 0:
+							if chunk > filesize:
+								chunk = filesize
+
+							o.write(f.read(chunk))
+							filesize -= chunk
 				except:
 					print('ERROR: Failed to create '+filename+'.img\n')
-					sys.exit(1)
-				
+					return 1
+
+				img_files.append(filename)
+
+				if os.name != 'nt':
+					if os.path.isfile('crc'):
+						print('Calculating crc value for '+filename+'.img ...\n')
+
+						crcval = []
+						if py2:
+							for i in crcdata:
+								crcval.append('%02X' % ord(i))
+						else:
+							for i in crcdata:
+								crcval.append('%02X' % i)
+
+						crcval = ''.join(crcval)
+						crcact = cmd('./crc output/'+filename+'.img')
+
+						if crcval != crcact:
+							print('ERROR: crc value for '+filename+'.img does not match\n')
+							return 1
 			else:
 				f.seek(filesize, 1)
-			
+
 			xbytes = bytenum - f.tell() % bytenum
 			if xbytes < bytenum:
 				f.seek(xbytes, 1)
 
-if not found:
-	sys.exit(1)
+	print('\nExtraction complete')
+	return 0
+
+if __name__ == '__main__':
+	import argparse
+
+	parser = argparse.ArgumentParser(description="Split UPDATE.APP file into img files", add_help=False)
+	required = parser.add_argument_group('Required')
+	required.add_argument("-f", "--filename", required=True, help="Path to update.app file")
+	optional = parser.add_argument_group('Optional')
+	optional.add_argument("-h", "--help", action="help", help="show this help message and exit")
+	optional.add_argument("-l", "--list", nargs="*", metavar=('img1', 'img2'), help="List of img files to extract")
+	args = parser.parse_args()
+
+	extract(args.filename, args.list)
