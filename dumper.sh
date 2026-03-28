@@ -1148,9 +1148,11 @@ codename=$(
     get_prop "ro.product.device"            product_h/region_comm/oversea/prop/local.prop       ||
 	get_prop "ro.product.device"            product_h/region_comm/china/prop/local.prop         ||
 	get_prop "ro.product.device"            product_h/etc/prop/local.prop                       ||
+	get_prop "ro.product.board"             product_h/etc/prop/local.prop                       ||
 	get_prop "ro.product.device"            hw_product/region_comm/oversea/prop/local.prop      ||
 	get_prop "ro.product.device"            hw_product/region_comm/china/prop/local.prop        ||
 	get_prop "ro.product.device"            hw_product/etc/prop/local.prop                      ||
+	get_prop "ro.product.board"             hw_product/etc/prop/local.prop                      ||
     get_prop "ro.product.odm.device"        odm/etc/build*.prop                                 ||
     get_prop "ro.product.odm.device"        system/system/build_default.prop                    ||
     get_prop "ro.product.device"            odm/etc/fingerprint/build.default.prop              ||
