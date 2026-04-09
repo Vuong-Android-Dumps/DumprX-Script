@@ -965,21 +965,21 @@ for p in $PARTITIONS; do
 	echo "Extracting $p partition..."
 	mkdir -p "$p" && rm -rf "${p:?}"/*
 
-	# Try 7z first
-	if "${BIN_7ZZ}" x -snld "$p.img" -y -o"$p/" > /dev/null 2>&1; then
+	# Try fsck.erofs (for EROFS images) first
+	if "${FSCK_EROFS}" --extract="$p" "$p.img" > /dev/null 2>&1; then
 		rm -f "$p.img"
 		continue
 	fi
 
-	# Try fsck.erofs (for EROFS images)
-	echo "7z failed, trying fsck.erofs..."
-	if [[ "$p" != "modem" ]] && "${FSCK_EROFS}" --extract="$p" "$p.img" > /dev/null 2>&1; then
+	# Try 7z
+	echo "fsck.erofs failed, trying 7z..."
+	if [[ "$p" != "modem" ]] && "${BIN_7ZZ}" x -snld "$p.img" -y -o"$p/" > /dev/null 2>&1; then
 		rm -f "$p.img"
 		continue
 	fi
 
 	# Try f2fs-extractor (for F2FS images)
-	echo "fsck.erofs failed, trying f2fs-extractor..."
+	echo "7z failed, trying f2fs-extractor..."
 	if [[ "$p" != "modem" ]] && "${F2FS_EXTRACTOR}" extract "$p.img" "$p" > /dev/null 2>&1; then
 		rm -f "$p.img"
 		continue
