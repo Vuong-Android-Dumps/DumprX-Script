@@ -962,7 +962,7 @@ for p in $PARTITIONS; do
 	[[ "$p" =~ ^(boot|recovery|dtbo|vendor_boot|init_boot|tz)$ ]] && continue
 	[[ ! -e "$p.img" ]] && continue
 
-	echo "Extracting $p partition..."
+	echo "Trying extracting $p partition via fsck.erofs..."
 	mkdir -p "$p" && rm -rf "${p:?}"/*
 
 	# Try fsck.erofs (for EROFS images) first
