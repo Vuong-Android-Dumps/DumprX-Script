@@ -140,6 +140,9 @@ RANDOM=$(date +%s)
 # EROFS
 FSCK_EROFS=${UTILSDIR}/bin/fsck.erofs
 
+# F2FS
+F2FS_EXTRACTOR="${UTILSDIR}"/bin/f2fs-extractor
+
 # Partition List That Are Currently Supported
 PARTITIONS="system system_ext system_other systemex vendor cust odm oem factory product xrom modem dtbo dtb boot vendor_boot recovery tz oppo_product preload_common opproduct reserve india my_preload my_odm my_stock my_operator my_country my_product my_company my_engineering my_heytap my_custom my_manifest my_carrier my_region my_bigball my_version special_preload system_dlkm vendor_dlkm odm_dlkm init_boot vendor_kernel_boot odmko socko nt_log mi_ext hw_product product_h preas preavs preload version super"
 EXT4PARTITIONS="system vendor cust odm oem factory product xrom systemex oppo_product preload_common hw_product product_h preas preavs"
@@ -956,43 +959,49 @@ ls -lAog
 
 # Extract Partitions
 for p in $PARTITIONS; do
-	if ! echo "${p}" | grep -q "boot\|recovery\|dtbo\|vendor_boot\|tz"; then
-		if [[ -e "$p.img" ]]; then
-			mkdir "$p" 2> /dev/null || rm -rf "${p:?}"/*
-			echo "Trying to extract $p partition via fsck.erofs."
-			"${FSCK_EROFS}" --extract="$p" "$p".img
-			if [ $? -eq 0 ]; then
-				rm "$p".img > /dev/null 2>&1
-			else
-				if [ -f $p.img ] && [ $p != "modem" ]; then
-					echo "Extraction via fsck.erofs failed, extracting $p partition via 7zz"
-					rm -rf "${p}"/*
-					${BIN_7ZZ} x -snld "$p".img -y -o"$p"/ > /dev/null 2>&1
-					if [ $? -eq 0 ]; then
-						rm -fv "$p".img > /dev/null 2>&1
-					else
-					    echo "Extraction via 7zz failed!"
-						echo "Couldn't extract $p partition via 7zz. Using mount loop"
-						sudo mount -o loop -t auto "$p".img "$p"
-						mkdir "${p}_"
-						sudo cp -rf "${p}/"* "${p}_"
-						sudo umount "${p}"
-						sudo cp -rf "${p}_/"* "${p}"
-						sudo rm -rf "${p}_"
-						sudo chown -R "$(whoami)" "${p}"/*
-						chmod -R u+rwX "${p}"/*
-						if [ $? -eq 0 ]; then
-							rm -fv "$p".img > /dev/null 2>&1
-						else
-							echo "Couldn't extract $p partition. It might use an unsupported filesystem."
-							echo "For EROFS: make sure you're using Linux 5.4+ kernel."
-							echo "For F2FS: make sure you're using Linux 5.15+ kernel."
-						fi
-					fi
-				fi
-			fi
-		fi
+	[[ "$p" =~ ^(boot|recovery|dtbo|vendor_boot|init_boot|tz)$ ]] && continue
+	[[ ! -e "$p.img" ]] && continue
+
+	echo "Extracting $p partition..."
+	mkdir -p "$p" && rm -rf "${p:?}"/*
+
+	# Try 7z first
+	if "${BIN_7ZZ}" x -snld "$p.img" -y -o"$p/" > /dev/null 2>&1; then
+		rm -f "$p.img"
+		continue
 	fi
+
+	# Try fsck.erofs (for EROFS images)
+	echo "7z failed, trying fsck.erofs..."
+	if [[ "$p" != "modem" ]] && "${FSCK_EROFS}" --extract="$p" "$p.img" > /dev/null 2>&1; then
+		rm -f "$p.img"
+		continue
+	fi
+
+	# Try f2fs-extractor (for F2FS images)
+	echo "fsck.erofs failed, trying f2fs-extractor..."
+	if [[ "$p" != "modem" ]] && "${F2FS_EXTRACTOR}" extract "$p.img" "$p" > /dev/null 2>&1; then
+		rm -f "$p.img"
+		continue
+	fi
+
+	# Fall back to mount loop
+	echo "f2fs-extractor failed, trying mount loop..."
+	if sudo mount -o loop -t auto "$p.img" "$p"; then
+		mkdir -p "${p}_"
+		sudo cp -rf "${p}/." "${p}_/"
+		sudo umount "$p"
+		sudo cp -rf "${p}_/." "$p/"
+		sudo rm -rf "${p}_"
+		sudo chown -R "$(whoami)" "$p"
+		chmod -R u+rwX "$p"
+		rm -f "$p.img"
+		continue
+	fi
+
+	echo "ERROR: Could not extract '$p' partition. Unsupported filesystem."
+	echo "For EROFS: Linux 5.4+ kernel required"
+	echo "For F2FS: Linux 5.15+ kernel required"
 done
 
 # Remove Unnecessary Image Leftover From OUTDIR
