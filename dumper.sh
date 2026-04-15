@@ -966,14 +966,14 @@ for p in $PARTITIONS; do
 	mkdir -p "$p" && rm -rf "${p:?}"/*
 
 	# Try fsck.erofs (for EROFS images) first
-	if "${FSCK_EROFS}" --extract="$p" "$p.img" > /dev/null 2>&1; then
+	if [[ "$p" != "modem" ]] && "${FSCK_EROFS}" --extract="$p" "$p.img" > /dev/null 2>&1; then
 		rm -f "$p.img"
 		continue
 	fi
 
 	# Try 7z
 	echo "fsck.erofs failed, trying 7z..."
-	if [[ "$p" != "modem" ]] && "${BIN_7ZZ}" x -snld "$p.img" -y -o"$p/" > /dev/null 2>&1; then
+	if "${BIN_7ZZ}" x -snld "$p.img" -y -o"$p/" > /dev/null 2>&1; then
 		rm -f "$p.img"
 		continue
 	fi
