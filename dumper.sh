@@ -980,7 +980,8 @@ for p in $PARTITIONS; do
 
 	# Try f2fsUnpack (for F2FS images)
 	echo "7z failed, trying f2fsUnpack..."
-	if [[ "$p" != "modem" ]] && "${F2FS_UNPACK}" -o "$p" "$p.img" > /dev/null 2>&1; then
+	if [[ "$p" != "modem" ]] && "${F2FS_UNPACK}" -o output "$p.img" > /dev/null 2>&1; then
+	    mv output/"$p" . && rm -rf output
 		rm -f "$p.img"
 		continue
 	fi
