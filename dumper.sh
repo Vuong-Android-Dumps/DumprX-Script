@@ -980,8 +980,7 @@ for p in $PARTITIONS; do
 
 	# Try f2fsUnpack (for F2FS images)
 	echo "7z failed, trying f2fsUnpack..."
-	if [[ "$p" != "modem" ]] && "${F2FS_UNPACK}" -o extracted "$p.img" > /dev/null 2>&1; then
-	    mv extracted/"$p" .
+	if [[ "$p" != "modem" ]] && "${F2FS_UNPACK}" -o . "$p.img" > /dev/null 2>&1; then
 		rm -f "$p.img"
 		continue
 	fi
@@ -1005,7 +1004,7 @@ for p in $PARTITIONS; do
 	echo "For F2FS: Linux 5.15+ kernel required"
 done
 
-rm -rf extracted
+rm -rf config
 
 # Remove Unnecessary Image Leftover From OUTDIR
 for q in *.img; do
