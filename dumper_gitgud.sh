@@ -1497,7 +1497,7 @@ elif [[ -s "${PROJECT_DIR}"/.gitlab_token ]]; then
 	# Commit and Push
 	# Pushing via HTTPS doesn't work on GitLab for Large Repos (it's an issue with gitlab for large repos)
 	# NOTE: Your SSH Keys Needs to be Added to your Gitlab Instance
-	git remote add origin git@${GITLAB_INSTANCE}:${GIT_ORG}/${repo}.git
+	git remote add origin git@ssh.${GITLAB_INSTANCE}:${GIT_ORG}/${repo}.git
 
 	# Ensure that the target repo is public
     curl -s \
