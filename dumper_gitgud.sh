@@ -1305,24 +1305,23 @@ commit_and_push(){
 	}
 
     echo "Dumping apps..."
-	git add $(find -type f -name '*.apk') > /dev/null 2>&1
-	git add $(find -type f -name '*.apk.*') > /dev/null 2>&1
+	find -type f -name '*.apk' -size -100M -exec git add {} \; > /dev/null 2>&1
 	git commit -sm "Add apps for ${description}" > /dev/null 2>&1
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 
 	for i in "${DIRS[@]}"; do
 	    echo "Dumping ${i}..."
-		[ -d "${i}" ] && git add "${i}" > /dev/null 2>&1
-		[ -d system/"${i}" ] && git add system/"${i}" > /dev/null 2>&1
-		[ -d system/system/"${i}" ] && git add system/system/"${i}" > /dev/null 2>&1
-		[ -d vendor/"${i}" ] && git add vendor/"${i}" > /dev/null 2>&1
+		[ -d "${i}" ] && find "${i}" -type f -size -100M -exec git add {} \; > /dev/null 2>&1
+		[ -d system/"${i}" ] && find system/"${i}" -type f -size -100M -exec git add {} \; > /dev/null 2>&1
+		[ -d system/system/"${i}" ] && find system/system/"${i}" -type f -size -100M -exec git add {} \; > /dev/null 2>&1
+		[ -d vendor/"${i}" ] && find vendor/"${i}" -type f -size -100M -exec git add {} \; > /dev/null 2>&1
 
 		git commit -sm "Add ${i} for ${description}" > /dev/null 2>&1
 		git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 	done
 
     echo "Dumping extras..."
-	git add . > /dev/null 2>&1
+	find . -type f -size -100M -exec git add {} \; > /dev/null 2>&1
 	git commit -sm "Add extras for ${description}" > /dev/null 2>&1
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 }
@@ -1426,7 +1425,6 @@ elif [[ -s "${PROJECT_DIR}"/.gitlab_token ]]; then
 
 	# Remove The Journal File Inside System/Vendor
 	find . -mindepth 2 -type d -name "\[SYS\]" -exec rm -rf {} \; 2>/dev/null
-	split_files 62M 47M
 	printf "\nFinal Repository Should Look Like...\n" && ls -lAog
 	printf "\n\nStarting Git Init...\n"
 
