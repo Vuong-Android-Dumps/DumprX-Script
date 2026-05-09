@@ -1315,7 +1315,6 @@ commit_and_push(){
 		[ -d system/"${i}" ] && find system/"${i}" -type f -size -100M -exec git add {} \; > /dev/null 2>&1
 		[ -d system/system/"${i}" ] && find system/system/"${i}" -type f -size -100M -exec git add {} \; > /dev/null 2>&1
 		[ -d vendor/"${i}" ] && find vendor/"${i}" -type f -size -100M -exec git add {} \; > /dev/null 2>&1
-
 		git commit -sm "Add ${i} for ${description}" > /dev/null 2>&1
 		git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 	done
@@ -1323,6 +1322,11 @@ commit_and_push(){
     echo "Dumping extras..."
 	find . -type f -size -100M -exec git add {} \; > /dev/null 2>&1
 	git commit -sm "Add extras for ${description}" > /dev/null 2>&1
+	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
+	
+	echo "Dumping LFS Files..."
+	git add . > /dev/null 2>&1
+	git commit -sm "Add LFS Files for ${description}" > /dev/null 2>&1
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 }
 
@@ -1427,7 +1431,6 @@ elif [[ -s "${PROJECT_DIR}"/.gitlab_token ]]; then
 	find . -mindepth 2 -type d -name "\[SYS\]" -exec rm -rf {} \; 2>/dev/null
 	printf "\nFinal Repository Should Look Like...\n" && ls -lAog
 	printf "\n\nStarting Git Init...\n"
-
 	git init		# Insure Your GitLab Authorization Before Running This Script
 	git config --global http.postBuffer 524288000		# A Simple Tuning to Get Rid of curl (18) error while `git push`
 	git checkout -b "${branch}" || { git checkout -b "${incremental}" && export branch="${incremental}"; }
