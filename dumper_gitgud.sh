@@ -1295,38 +1295,29 @@ commit_and_push(){
 		"system"
 	)
 
-	git lfs install > /dev/null 2>&1
-	[ -e ".gitattributes" ] || find . -type f -not -path ".git/*" -size +100M -exec git lfs track {} \; > /dev/null 2>&1
-	[ -e ".gitattributes" ] && {
-	    echo "Setup Git LFS..."
-		git add ".gitattributes" > /dev/null 2>&1
-		git commit -sm "Setup Git LFS" > /dev/null 2>&1
-		git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
-	}
-
     echo "Dumping apps..."
-	find -type f -name '*.apk' -size -100M -exec git add {} \; > /dev/null 2>&1
+	find -type f -name '*.apk' -size -99M -exec git add {} \; > /dev/null 2>&1
 	git commit -sm "Add apps for ${description}" > /dev/null 2>&1
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 
 	for i in "${DIRS[@]}"; do
 	    echo "Dumping ${i}..."
-		[ -d "${i}" ] && find "${i}" -type f -size -100M -exec git add {} \; > /dev/null 2>&1
-		[ -d system/"${i}" ] && find system/"${i}" -type f -size -100M -exec git add {} \; > /dev/null 2>&1
-		[ -d system/system/"${i}" ] && find system/system/"${i}" -type f -size -100M -exec git add {} \; > /dev/null 2>&1
-		[ -d vendor/"${i}" ] && find vendor/"${i}" -type f -size -100M -exec git add {} \; > /dev/null 2>&1
+		[ -d "${i}" ] && find "${i}" -type f -size -99M -exec git add {} \; > /dev/null 2>&1
+		[ -d system/"${i}" ] && find system/"${i}" -type f -size -99M -exec git add {} \; > /dev/null 2>&1
+		[ -d system/system/"${i}" ] && find system/system/"${i}" -type f -size -99M -exec git add {} \; > /dev/null 2>&1
+		[ -d vendor/"${i}" ] && find vendor/"${i}" -type f -size -99M -exec git add {} \; > /dev/null 2>&1
 		git commit -sm "Add ${i} for ${description}" > /dev/null 2>&1
 		git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 	done
 
     echo "Dumping extras..."
-	find . -type f -size -100M -exec git add {} \; > /dev/null 2>&1
+	find . -type f -size -99M -exec git add {} \; > /dev/null 2>&1
 	git commit -sm "Add extras for ${description}" > /dev/null 2>&1
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 	
-	echo "Dumping LFS Files..."
+	echo "Dumping more extras..."
 	git add . > /dev/null 2>&1
-	git commit -sm "Add LFS Files for ${description}" > /dev/null 2>&1
+	git commit -sm "Add more extras for ${description}" > /dev/null 2>&1
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 }
 
@@ -1429,6 +1420,7 @@ elif [[ -s "${PROJECT_DIR}"/.gitlab_token ]]; then
 
 	# Remove The Journal File Inside System/Vendor
 	find . -mindepth 2 -type d -name "\[SYS\]" -exec rm -rf {} \; 2>/dev/null
+	split_files 100M 100M
 	printf "\nFinal Repository Should Look Like...\n" && ls -lAog
 	printf "\n\nStarting Git Init...\n"
 	git init		# Insure Your GitLab Authorization Before Running This Script
