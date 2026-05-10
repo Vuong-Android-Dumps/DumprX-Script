@@ -1296,29 +1296,31 @@ commit_and_push(){
 	)
 
     echo "Dumping apps..."
-	find -type f -name '*.apk' -size -100M -exec git add {} \; > /dev/null 2>&1
+	find -type f -name '*.apk' -size -100M -exec git add {} \;
 	git commit -sm "Add apps for ${description}" > /dev/null 2>&1
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 
 	for i in "${DIRS[@]}"; do
 	    echo "Dumping ${i}..."
-		[ -d "${i}" ] && find "${i}" -type f -size -100M -exec git add {} \; > /dev/null 2>&1
-		[ -d system/"${i}" ] && find system/"${i}" -type f -size -100M -exec git add {} \; > /dev/null 2>&1
-		[ -d system/system/"${i}" ] && find system/system/"${i}" -type f -size -100M -exec git add {} \; > /dev/null 2>&1
-		[ -d vendor/"${i}" ] && find vendor/"${i}" -type f -size -100M -exec git add {} \; > /dev/null 2>&1
+		[ -d "${i}" ] && find "${i}" -type f -size -100M -exec git add {} \;
+		[ -d system/"${i}" ] && find system/"${i}" -type f -size -100M -exec git add {} \;
+		[ -d system/system/"${i}" ] && find system/system/"${i}" -type f -size -100M -exec git add {} \;
+		[ -d vendor/"${i}" ] && find vendor/"${i}" -type f -size -100M -exec git add {} \;
 		git commit -sm "Add ${i} for ${description}" > /dev/null 2>&1
 		git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 	done
 
     echo "Dumping extras..."
-	find . -type f -size -100M -exec git add {} \; > /dev/null 2>&1
+	find . -type f -size -100M -exec git add {} \;
 	git commit -sm "Add extras for ${description}" > /dev/null 2>&1
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 	
 	echo "Dumping more extras..."
-	git add . > /dev/null 2>&1
+	git add .
 	git commit -sm "Add more extras for ${description}" > /dev/null 2>&1
-	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
+	while true; do
+	    git push -u origin "${branch}" && break
+	done
 }
 
 split_files(){
