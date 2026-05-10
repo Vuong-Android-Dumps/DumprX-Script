@@ -1314,12 +1314,14 @@ commit_and_push(){
 	find . -type f -size -100M -exec git add {} \;
 	git commit -sm "Add extras for ${description}" > /dev/null 2>&1
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
-	
-	echo "Dumping more extras..."
-	git add .
-	git commit -sm "Add more extras for ${description}" > /dev/null 2>&1
-	while true; do
-	    git push -u origin "${branch}" && break
+
+	for file in $(find . -type f -size +100M); do
+	    echo "Dumping ${file}..."
+	    git add "${file}"
+	    git commit -sm "Add ${file} for ${description}" > /dev/null 2>&1
+	    while true; do
+	        git push -u origin "${branch}" && break
+	    done
 	done
 }
 
@@ -1423,6 +1425,7 @@ elif [[ -s "${PROJECT_DIR}"/.gitlab_token ]]; then
 	# Remove The Journal File Inside System/Vendor
 	find . -mindepth 2 -type d -name "\[SYS\]" -exec rm -rf {} \; 2>/dev/null
 	find . -type f -size +100M -exec ls -la {} \;
+	split_files 100M 500M
 	printf "\nFinal Repository Should Look Like...\n" && ls -lAog
 	printf "\n\nStarting Git Init...\n"
 	git init		# Insure Your GitLab Authorization Before Running This Script
