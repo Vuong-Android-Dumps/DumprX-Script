@@ -1295,27 +1295,7 @@ commit_and_push(){
 		"system"
 	)
 
-    echo "Dumping apps..."
-	find -type f -name '*.apk' -size -100M -exec git add {} \;
-	git commit -sm "Add apps for ${description}" > /dev/null 2>&1
-	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
-
-	for i in "${DIRS[@]}"; do
-	    echo "Dumping ${i}..."
-		[ -d "${i}" ] && find "${i}" -type f -size -100M -exec git add {} \;
-		[ -d system/"${i}" ] && find system/"${i}" -type f -size -100M -exec git add {} \;
-		[ -d system/system/"${i}" ] && find system/system/"${i}" -type f -size -100M -exec git add {} \;
-		[ -d vendor/"${i}" ] && find vendor/"${i}" -type f -size -100M -exec git add {} \;
-		git commit -sm "Add ${i} for ${description}" > /dev/null 2>&1
-		git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
-	done
-
-    echo "Dumping extras..."
-	find . -type f -size -100M -exec git add {} \;
-	git commit -sm "Add extras for ${description}" > /dev/null 2>&1
-	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
-
-	for file in $(find . -type f -size +100M); do
+	for file in $(find -type f -size +100M); do
 	    echo "Dumping ${file}..."
 	    git add "${file}"
 	    git commit -sm "Add ${file} for ${description}" > /dev/null 2>&1
@@ -1323,6 +1303,26 @@ commit_and_push(){
 	        git push -u origin "${branch}" && break
 	    done
 	done
+
+    echo "Dumping apps..."
+	find -type f -name '*.apk' -exec git add {} \;
+	git commit -sm "Add apps for ${description}" > /dev/null 2>&1
+	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
+
+	for i in "${DIRS[@]}"; do
+	    echo "Dumping ${i}..."
+		[ -d "${i}" ] && git add "${i}"
+		[ -d system/"${i}" ] && git add system/"${i}"
+		[ -d system/system/"${i}" ] && git add system/system/"${i}"
+		[ -d vendor/"${i}" ] && git add vendor/"${i}"
+		git commit -sm "Add ${i} for ${description}" > /dev/null 2>&1
+		git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
+	done
+
+    echo "Dumping extras..."
+	git add .
+	git commit -sm "Add extras for ${description}" > /dev/null 2>&1
+	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 }
 
 split_files(){
