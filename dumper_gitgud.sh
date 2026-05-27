@@ -1295,34 +1295,34 @@ commit_and_push(){
 		"system"
 	)
 
+    echo "Adding apps..."
+	find -type f -name '*.apk' -exec git add {} \;
+	git commit -sm "Add apps for ${description}"
+	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
+
+	for i in "${DIRS[@]}"; do
+	    echo "Adding ${i}..."
+		[ -d "${i}" ] && git add "${i}"
+		[ -d system/"${i}" ] && git add system/"${i}"
+		[ -d system/system/"${i}" ] && git add system/system/"${i}"
+		[ -d vendor/"${i}" ] && git add vendor/"${i}"
+		git commit -sm "Add ${i} for ${description}"
+		git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
+	done
+
+    echo "Adding extras..."
+	git add .
+	git commit -sm "Add extras for ${description}"
+	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
+
 	for file in $(find -type f -size +100M); do
-	    echo "Dumping ${file}..."
+	    echo "Adding ${file}..."
 	    git add "${file}"
 	    git commit -sm "Add ${file} for ${description}" > /dev/null 2>&1
 	    while true; do
 	        git push -u origin "${branch}" && break
 	    done
 	done
-
-    echo "Dumping apps..."
-	find -type f -name '*.apk' -exec git add {} \;
-	git commit -sm "Add apps for ${description}" > /dev/null 2>&1
-	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
-
-	for i in "${DIRS[@]}"; do
-	    echo "Dumping ${i}..."
-		[ -d "${i}" ] && git add "${i}"
-		[ -d system/"${i}" ] && git add system/"${i}"
-		[ -d system/system/"${i}" ] && git add system/system/"${i}"
-		[ -d vendor/"${i}" ] && git add vendor/"${i}"
-		git commit -sm "Add ${i} for ${description}" > /dev/null 2>&1
-		git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
-	done
-
-    echo "Dumping extras..."
-	git add .
-	git commit -sm "Add extras for ${description}" > /dev/null 2>&1
-	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 }
 
 split_files(){
@@ -1424,7 +1424,8 @@ elif [[ -s "${PROJECT_DIR}"/.gitlab_token ]]; then
 
 	# Remove The Journal File Inside System/Vendor
 	find . -mindepth 2 -type d -name "\[SYS\]" -exec rm -rf {} \; 2>/dev/null
-	find . -type f -size +100M -exec ls -la {} \;
+	find . -type f -size +100M -size -500M -exec ls -la {} \;
+	find . -type f -size +500M -exec ls -la {} \;
 	split_files 500M 500M
 	printf "\nFinal Repository Should Look Like...\n" && ls -lAog
 	printf "\n\nStarting Git Init...\n"
