@@ -1296,33 +1296,38 @@ commit_and_push(){
 	)
 
     echo "Adding apps..."
-	find -type f -name '*.apk' -exec git add {} \;
+	find -type f -size -100M -name '*.apk' -exec git add {} \;
 	git commit -sm "Add apps for ${description}"
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 
 	for i in "${DIRS[@]}"; do
 	    echo "Adding ${i}..."
-		[ -d "${i}" ] && git add "${i}"
-		[ -d system/"${i}" ] && git add system/"${i}"
-		[ -d system/system/"${i}" ] && git add system/system/"${i}"
-		[ -d vendor/"${i}" ] && git add vendor/"${i}"
+		[ -d "${i}" ] && find "${i}" -type f -size -100M -exec git add {} \;
+		[ -d system/"${i}" ] && find system/"${i}" -type f -size -100M -exec git add {} \;
+		[ -d system/system/"${i}" ] && find system/system/"${i}" -type f -size -100M -exec git add {} \;
+		[ -d vendor/"${i}" ] && find vendor/"${i}" -type f -size -100M -exec git add {} \;
 		git commit -sm "Add ${i} for ${description}"
 		git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
+	done
+
+	echo "Adding 100MB to 500MB files..."
+	find . -type f -size +100M -size -500M -exec git add {} \;
+	git commit -sm "Add 100MB to 500MB files for ${description}"
+	while true; do
+	    git push -u origin "${branch}" && break
+	done
+
+	echo "Adding +500MB files..."
+	find . -type f -size +500M -exec git add {} \;
+	git commit -sm "Add +500MB files for ${description}"
+	while true; do
+	    git push -u origin "${branch}" && break
 	done
 
     echo "Adding extras..."
 	git add .
 	git commit -sm "Add extras for ${description}"
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
-
-	for file in $(find -type f -size +100M); do
-	    echo "Adding ${file}..."
-	    git add "${file}"
-	    git commit -sm "Add ${file} for ${description}" > /dev/null 2>&1
-	    while true; do
-	        git push -u origin "${branch}" && break
-	    done
-	done
 }
 
 split_files(){
