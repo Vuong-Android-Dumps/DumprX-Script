@@ -1429,8 +1429,8 @@ elif [[ -s "${PROJECT_DIR}"/.gitlab_token ]]; then
 
 	# Remove The Journal File Inside System/Vendor
 	find . -mindepth 2 -type d -name "\[SYS\]" -exec rm -rf {} \; 2>/dev/null
-	find . -type f -size +100M -size -500M -exec ls -la {} \;
-	find . -type f -size +500M -exec ls -la {} \;
+	find . -type f -size +100M -size -500M -exec du -ch {} +
+	find . -type f -size +500M -exec du -ch {} +
 	printf "\nFinal Repository Should Look Like...\n" && ls -lAog
 	printf "\n\nStarting Git Init...\n"
 	git init		# Insure Your GitLab Authorization Before Running This Script
