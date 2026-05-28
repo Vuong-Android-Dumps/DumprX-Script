@@ -1321,7 +1321,15 @@ commit_and_push(){
 	echo "Adding apps large files..."
 	for file in $(find . -type f -name "*.apk" -size +100M); do
 	    git add "${file}"
-		echo "Commiting apps large files..."
+		echo "Commiting ${file}..."
+		git commit -sm "Add ${file} for ${description}" > /dev/null 2>&1
+		git push -u origin "${branch}"
+	done
+
+	echo "Adding large files..."
+	for file in $(find . -type f ! -name "*.apk" -size +100M); do
+	    git add "${file}"
+		echo "Commiting ${file}..."
 		git commit -sm "Add ${file} for ${description}" > /dev/null 2>&1
 		git push -u origin "${branch}"
 	done
