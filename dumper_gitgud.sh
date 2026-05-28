@@ -1317,6 +1317,19 @@ commit_and_push(){
 	echo "Commiting extras..."
 	git commit -sm "Add extras for ${description}" > /dev/null 2>&1
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
+
+	echo "Adding apps large files..."
+	for file in $(find . -type f -name "*.apk" -size +100M); do
+	    git add "${file}"
+		echo "Commiting apps large files..."
+		git commit -sm "Add ${file} for ${description}" > /dev/null 2>&1
+		git push -u origin "${branch}"
+	done
+
+	echo "Final commit..."
+	git add .
+	git commit -sm "Final commit for ${description}"
+	git push -u origin "${branch}"
 }
 
 split_files(){
