@@ -1313,7 +1313,7 @@ commit_and_push(){
 	done
 
     echo "Adding extras..."
-	git add .
+	find . -type f -size -100M -exec git add {} \;
 	echo "Commiting extras..."
 	git commit -sm "Add extras for ${description}" > /dev/null 2>&1
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
