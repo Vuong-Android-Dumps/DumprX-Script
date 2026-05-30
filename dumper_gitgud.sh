@@ -1319,7 +1319,7 @@ commit_and_push(){
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 
 	echo "Adding apps large files..."
-	for n in ${seq 5 5 25}; do
+	for n in $(seq 5 5 25); do
 	    find . -type f -name "*.apk" -size +100M \
 		| sort -nr \
 		| head -n ${n} \
@@ -1329,7 +1329,7 @@ commit_and_push(){
 	done
 
 	echo "Adding large files..."
-	for n in ${seq 5 5 25}; do
+	for n in $(seq 5 5 25); do
 	    find . -path './.git' -prune -o -type f ! -name "*.apk" -size +100M \
 		| sort -nr \
 		| head -n ${n} \
