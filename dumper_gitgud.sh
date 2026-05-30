@@ -1335,7 +1335,7 @@ commit_and_push(){
 		| head -n ${n} \
 		| cut -f2- \
 		| xargs git add
-		git commit -sm "Add 8 large files for ${description}" > /dev/null 2>&1
+		git commit -sm "Add 10 large files for ${description}" > /dev/null 2>&1
 		git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 	done
 
