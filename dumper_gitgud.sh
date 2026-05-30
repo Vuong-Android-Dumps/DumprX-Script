@@ -1318,39 +1318,21 @@ commit_and_push(){
 	git commit -sm "Add extras for ${description}" > /dev/null 2>&1
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 
-	echo "Adding apps large files..."
-	for n in $(seq 5 5 25); do
-	    find . -type f -name "*.apk" -size +100M -printf '%s\t%p\n' \
-		| sort -nr \
-		| head -n ${n} \
-		| cut -f2- \
-		| xargs git add
-		git commit -sm "Add 5 apps large files for ${description}" > /dev/null 2>&1
-		git push -u origin "${branch}"
-	done
-
 	echo "Adding large files..."
-	for n in $(seq 5 5 25); do
-	    find . -path './.git' -prune -o -type f ! -name "*.apk" -size +100M -printf '%s\t%p\n' \
+	for n in $(seq 6 6 30); do
+	    find . -path './.git' -prune -o -type f -size +100M -printf '%s\t%p\n' \
 		| sort -nr \
 		| head -n ${n} \
 		| cut -f2- \
 		| xargs git add
-		git commit -sm "Add 5 large files for ${description}" > /dev/null 2>&1
-		git push -u origin "${branch}"
+		git commit -sm "Add 6 large files for ${description}" > /dev/null 2>&1
+		git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 	done
-
-	find . -path './.git' -prune -o -type f -size +100M -printf '%s\t%p\n' \
-	| sort -nr \
-	| cut -f2- \
-	| xargs git add
-	git commit -sm "Add more large files for ${description}" > /dev/null 2>&1
-	git push -u origin "${branch}"
 
 	echo "Final commit..."
 	git add .
-	git commit -sm "Final commit for ${description}"
-	git push -u origin "${branch}"
+	git commit -sm "Final commit for ${description}" > /dev/null 2>&1
+	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 }
 
 split_files(){
