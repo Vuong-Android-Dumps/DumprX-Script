@@ -1319,23 +1319,13 @@ commit_and_push(){
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 
 	echo "Adding large files..."
-	for n in $(seq 6 6 30); do
+	for n in $(seq 6 6 36); do
 	    find . -path './.git' -prune -o -type f -size +100M -printf '%s\t%p\n' \
 		| sort -nr \
 		| head -n ${n} \
 		| cut -f2- \
 		| xargs git add
 		git commit -sm "Add 6 large files for ${description}" > /dev/null 2>&1
-		git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
-	done
-
-	for n in $(seq 40 10 60); do
-	    find . -path './.git' -prune -o -type f -size +100M -printf '%s\t%p\n' \
-		| sort -nr \
-		| head -n ${n} \
-		| cut -f2- \
-		| xargs git add
-		git commit -sm "Add 10 large files for ${description}" > /dev/null 2>&1
 		git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 	done
 
