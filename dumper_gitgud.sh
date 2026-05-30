@@ -1296,25 +1296,15 @@ commit_and_push(){
 	)
 
 	echo "Adding large files..."
-	for n in $(printf "6\n19\n40\n"); do
-	    find . -path './.git' -prune -o -type f -size +100M -printf '%s\t%p\n' \
+	for n in $(echo -e "750\n500\n250\n200\n150\n100"); do
+	    find . -path './.git' -prune -o -type f -size +${n}M -printf '%s\t%p\n' \
 		| sort -nr \
-		| head -n ${n} \
 		| cut -f2- \
 		| xargs git add
-		git commit -sm "Total ${n} large files for ${description}" > /dev/null 2>&1
+		git commit -sm "Add +${n}MB large files for ${description}" > /dev/null 2>&1
 		while true; do
 	        git push -u origin "${branch}" && break
 	    done
-	done
-
-	find . -path './.git' -prune -o -type f -size +100M -printf '%s\t%p\n' \
-	| sort -nr \
-	| cut -f2- \
-	| xargs git add
-	git commit -sm "Add more large files for ${description}" > /dev/null 2>&1
-	while true; do
-	    git push -u origin "${branch}" && break
 	done
 
     echo "Adding apps..."
