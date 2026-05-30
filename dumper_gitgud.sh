@@ -1319,20 +1319,30 @@ commit_and_push(){
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 
 	echo "Adding apps large files..."
-	for file in $(find . -type f -name "*.apk" -size +100M); do
-	    git add "${file}"
-		echo "Commiting ${file}..."
-		git commit -sm "Add ${file} for ${description}" > /dev/null 2>&1
+	for n in ${seq 5 5 25}; do
+	    find . -type f -name "*.apk" -size +100M \
+		| sort -nr \
+		| head -n ${n} \
+		| xargs git add
+		git commit -sm "Add 5 apps large files for ${description}" > /dev/null 2>&1
 		git push -u origin "${branch}"
 	done
 
 	echo "Adding large files..."
-	for file in $(find . -path './.git' -prune -o -type f ! -name "*.apk" -size +100M); do
-	    git add "${file}"
-		echo "Commiting ${file}..."
-		git commit -sm "Add ${file} for ${description}" > /dev/null 2>&1
+	for n in ${seq 5 5 25}; do
+	    find . -path './.git' -prune -o -type f ! -name "*.apk" -size +100M \
+		| sort -nr \
+		| head -n ${n} \
+		| xargs git add
+		git commit -sm "Add 5 large files for ${description}" > /dev/null 2>&1
 		git push -u origin "${branch}"
 	done
+
+	find . -path './.git' -prune -o -type f -size +100M \
+	| sort -nr \
+	| xargs git add
+	git commit -sm "Add more large files for ${description}" > /dev/null 2>&1
+	git push -u origin "${branch}"
 
 	echo "Final commit..."
 	git add .
