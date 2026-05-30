@@ -1295,29 +1295,6 @@ commit_and_push(){
 		"system"
 	)
 
-    echo "Adding apps..."
-	find -type f -size -100M -name '*.apk' -exec git add {} \;
-	echo "Commiting apps..."
-	git commit -sm "Add apps for ${description}" > /dev/null 2>&1
-	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
-
-	for i in "${DIRS[@]}"; do
-	    echo "Adding ${i}..."
-		[ -d "${i}" ] && find "${i}" -type f -size -100M -exec git add {} \;
-		[ -d system/"${i}" ] && find system/"${i}" -type f -size -100M -exec git add {} \;
-		[ -d system/system/"${i}" ] && find system/system/"${i}" -type f -size -100M -exec git add {} \;
-		[ -d vendor/"${i}" ] && find vendor/"${i}" -type f -size -100M -exec git add {} \;
-		echo "Commiting ${i}..."
-		git commit -sm "Add ${i} for ${description}" > /dev/null 2>&1
-		git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
-	done
-
-    echo "Adding extras..."
-	find . -type f -size -100M -exec git add {} \;
-	echo "Commiting extras..."
-	git commit -sm "Add extras for ${description}" > /dev/null 2>&1
-	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
-
 	echo "Adding large files..."
 	for n in $(seq 6 6 54); do
 	    find . -path './.git' -prune -o -type f -size +100M -printf '%s\t%p\n' \
@@ -1326,15 +1303,42 @@ commit_and_push(){
 		| cut -f2- \
 		| xargs git add
 		git commit -sm "Add 6 large files for ${description}" > /dev/null 2>&1
-		git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
+		while true; do
+	        git push -u origin "${branch}" && break
+	    done
 	done
 
-	echo "Final commit..."
-	git add .
-	git commit -sm "Final commit for ${description}" > /dev/null 2>&1
+	find . -path './.git' -prune -o -type f -size +100M -printf '%s\t%p\n' \
+	| sort -nr \
+	| cut -f2- \
+	| xargs git add
+	git commit -sm "Add more large files for ${description}" > /dev/null 2>&1
 	while true; do
 	    git push -u origin "${branch}" && break
 	done
+
+    echo "Adding apps..."
+	find -type f -name '*.apk' -exec git add {} \;
+	echo "Commiting apps..."
+	git commit -sm "Add apps for ${description}" > /dev/null 2>&1
+	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
+
+	for i in "${DIRS[@]}"; do
+	    echo "Adding ${i}..."
+		[ -d "${i}" ] && git add "${i}"
+		[ -d system/"${i}" ] && git add system/"${i}"
+		[ -d system/system/"${i}" ] && git add system/system/"${i}"
+		[ -d vendor/"${i}" ] && git add vendor/"${i}"
+		echo "Commiting ${i}..."
+		git commit -sm "Add ${i} for ${description}" > /dev/null 2>&1
+		git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
+	done
+
+    echo "Adding extras..."
+	git add .
+	echo "Commiting extras..."
+	git commit -sm "Add extras for ${description}" > /dev/null 2>&1
+	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 }
 
 split_files(){
@@ -1350,7 +1354,7 @@ split_files(){
 			printf "cat %s.* 2>/dev/null >> %s\n" "${l}" "${l}" >> join_split_files.sh
 			printf "rm -f %s.* 2>/dev/null\n" "${l}" >> join_split_files.sh
 		done < "${TMPDIR}"/.largefiles
-		chmod a+x join_split_files.sh 2>/dev/null
+		chmod a+x join_split_files.sh 2>/devnull
 	fi
 	rm -rf "${TMPDIR}" 2>/dev/null
 }
