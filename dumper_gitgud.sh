@@ -1323,10 +1323,6 @@ commit_and_push(){
 	git commit -sm "Add apps for ${description}" > /dev/null 2>&1
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 
-	git add .
-	git commit -sm "Add all files for ${description}" > /dev/null 2>&1
-	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}" 
-
 	for i in "${DIRS[@]}"; do
 	    echo "Adding ${i}..."
 		[ -d "${i}" ] && git add "${i}"
