@@ -1318,17 +1318,17 @@ commit_and_push(){
 	done
 
     echo "Adding apps..."
-	find -type f -name '*.apk' -exec git add {} \;
+	find -type f -name '*.apk' -size -100M -exec git add {} \;
 	echo "Commiting apps..."
 	git commit -sm "Add apps for ${description}" > /dev/null 2>&1
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 
 	for i in "${DIRS[@]}"; do
 	    echo "Adding ${i}..."
-		[ -d "${i}" ] && git add "${i}"
-		[ -d system/"${i}" ] && git add system/"${i}"
-		[ -d system/system/"${i}" ] && git add system/system/"${i}"
-		[ -d vendor/"${i}" ] && git add vendor/"${i}"
+		[ -d "${i}" ] && find "${i}" -type f -size -100M -exec git add {} \;
+		[ -d system/"${i}" ] && find system/"${i}" -type f -size -100M -exec git add {} \;
+		[ -d system/system/"${i}" ] && find system/system/"${i}" -type f -size -100M -exec git add {} \;
+		[ -d vendor/"${i}" ] && find vendor/"${i}" -type f -size -100M -exec git add {} \;
 		echo "Commiting ${i}..."
 		git commit -sm "Add ${i} for ${description}" > /dev/null 2>&1
 		git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
@@ -1336,6 +1336,7 @@ commit_and_push(){
 
     echo "Adding extras..."
 	git add .
+	find . -type f -size +100M -exec git rm -cached {} \;
 	echo "Commiting extras..."
 	git commit -sm "Add extras for ${description}" > /dev/null 2>&1
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
