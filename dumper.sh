@@ -1296,33 +1296,31 @@ commit_and_push(){
 	)
 
 	git lfs install > /dev/null 2>&1
-	[ -e ".gitattributes" ] || find . -type f -not -path ".git/*" -size +100M -exec git lfs track {} \; > /dev/null 2>&1
+	[ -e ".gitattributes" ] || find . -type f -not -path ".git/*" -size +100M -exec git lfs track {} \;
 	[ -e ".gitattributes" ] && {
 	    echo "Setup Git LFS..."
-		git add ".gitattributes" > /dev/null 2>&1
+		git add ".gitattributes"
 		git commit -sm "Setup Git LFS" > /dev/null 2>&1
 		git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 	}
 
     echo "Dumping apps..."
-	git add $(find -type f -name '*.apk') > /dev/null 2>&1
-	git add $(find -type f -name '*.apk.*') > /dev/null 2>&1
+	git add $(find -type f -name '*.apk')
 	git commit -sm "Add apps for ${description}" > /dev/null 2>&1
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 
 	for i in "${DIRS[@]}"; do
 	    echo "Dumping ${i}..."
-		[ -d "${i}" ] && git add "${i}" > /dev/null 2>&1
-		[ -d system/"${i}" ] && git add system/"${i}" > /dev/null 2>&1
-		[ -d system/system/"${i}" ] && git add system/system/"${i}" > /dev/null 2>&1
-		[ -d vendor/"${i}" ] && git add vendor/"${i}" > /dev/null 2>&1
-
+		[ -d "${i}" ] && git add "${i}"
+		[ -d system/"${i}" ] && git add system/"${i}"
+		[ -d system/system/"${i}" ] && git add system/system/"${i}"
+		[ -d vendor/"${i}" ] && git add vendor/"${i}"
 		git commit -sm "Add ${i} for ${description}" > /dev/null 2>&1
 		git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 	done
 
     echo "Dumping extras..."
-	git add . > /dev/null 2>&1
+	git add .
 	git commit -sm "Add extras for ${description}" > /dev/null 2>&1
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 }
@@ -1428,7 +1426,6 @@ elif [[ -s "${PROJECT_DIR}"/.gitlab_token ]]; then
 	find . -mindepth 2 -type d -name "\[SYS\]" -exec rm -rf {} \; 2>/dev/null
 	printf "\nFinal Repository Should Look Like...\n" && ls -lAog
 	printf "\n\nStarting Git Init...\n"
-
 	git init		# Insure Your GitLab Authorization Before Running This Script
 	git config --global http.postBuffer 524288000		# A Simple Tuning to Get Rid of curl (18) error while `git push`
 	git checkout -b "${branch}" || { git checkout -b "${incremental}" && export branch="${incremental}"; }
