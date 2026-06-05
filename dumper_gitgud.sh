@@ -1327,9 +1327,7 @@ commit_and_push(){
 		| cut -d' ' -f2- \
 		| xargs git add
 		git commit -sm "Add 6 large files for ${description}" > /dev/null 2>&1
-		while true; do
-	        git push -u origin "${branch}" && break
-	    done
+		git push -u origin "${branch}"
 	done
 
 	find . -path './.git' -prune -o -type f -size +100M -printf '%s %p\n' \
@@ -1337,9 +1335,7 @@ commit_and_push(){
 	| cut -d' ' -f2- \
 	| xargs git add
 	git commit -sm "Add more large files for ${description}" > /dev/null 2>&1
-	while true; do
-	    git push -u origin "${branch}" && break
-	done
+	git push -u origin "${branch}"
 }
 
 split_files(){
