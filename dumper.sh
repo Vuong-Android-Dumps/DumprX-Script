@@ -1306,6 +1306,7 @@ commit_and_push(){
 
     echo "Dumping apps..."
 	git add $(find -type f -name '*.apk')
+	echo "Commiting apps..."
 	git commit -sm "Add apps for ${description}" > /dev/null 2>&1
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 
@@ -1315,12 +1316,14 @@ commit_and_push(){
 		[ -d system/"${i}" ] && git add system/"${i}"
 		[ -d system/system/"${i}" ] && git add system/system/"${i}"
 		[ -d vendor/"${i}" ] && git add vendor/"${i}"
+		echo "Commiting ${i}..."
 		git commit -sm "Add ${i} for ${description}" > /dev/null 2>&1
 		git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 	done
 
     echo "Dumping extras..."
 	git add .
+	echo "Commiting extras..."
 	git commit -sm "Add extras for ${description}" > /dev/null 2>&1
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 }
