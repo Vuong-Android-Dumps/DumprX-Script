@@ -1321,10 +1321,10 @@ commit_and_push(){
 
 	echo "Adding large files..."
 	for n in $(seq 6 6 54); do
-	    find . -path './.git' -prune -o -type f -size +100M -printf '%s\t%p\n' \
-		| sort -nr \
+	    find . -path './.git' -prune -o -type f -size +100M -printf '%s %p\n' \
+		| sort -n \
 		| head -n ${n} \
-		| cut -f2- \
+		| cut -d' ' -f2- \
 		| xargs git add
 		git commit -sm "Add 6 large files for ${description}" > /dev/null 2>&1
 		while true; do
@@ -1332,9 +1332,9 @@ commit_and_push(){
 	    done
 	done
 
-	find . -path './.git' -prune -o -type f -size +100M -printf '%s\t%p\n' \
-	| sort -nr \
-	| cut -f2- \
+	find . -path './.git' -prune -o -type f -size +100M -printf '%s %p\n' \
+	| sort -n \
+	| cut -d' ' -f2- \
 	| xargs git add
 	git commit -sm "Add more large files for ${description}" > /dev/null 2>&1
 	while true; do
@@ -1441,7 +1441,7 @@ elif [[ -s "${PROJECT_DIR}"/.gitlab_token ]]; then
 
 	# Remove The Journal File Inside System/Vendor
 	find . -mindepth 2 -type d -name "\[SYS\]" -exec rm -rf {} \; 2>/dev/null
-	find . -path './.git' -prune -o -type f -size +100M -printf '%s\t%p\n' | sort -nr | cut -f2- | xargs du -ch
+	find . -path './.git' -prune -o -type f -size +100M -printf '%s %p\n' | sort -n | cut -d' ' -f2- | xargs du -ch
 	printf "\nFinal Repository Should Look Like...\n" && ls -lAog
 	printf "\n\nStarting Git Init...\n"
 	git init		# Insure Your GitLab Authorization Before Running This Script
