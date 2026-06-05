@@ -1326,15 +1326,14 @@ commit_and_push(){
 		| head -n ${n} \
 		| cut -d' ' -f2- \
 		| xargs git add
-		git commit -sm "Add 6 large files for ${description}" > /dev/null 2>&1
+		echo "Commiting several large files..."
+		git commit -sm "Add several large files for ${description}" > /dev/null 2>&1
 		git push -u origin "${branch}"
 	done
 
-	find . -path './.git' -prune -o -type f -size +100M -printf '%s %p\n' \
-	| sort -n \
-	| cut -d' ' -f2- \
-	| xargs git add
-	git commit -sm "Add more large files for ${description}" > /dev/null 2>&1
+	echo "Final commit..."
+	git add .
+	git commit -sm "Final commit for ${description}" > /dev/null 2>&1
 	git push -u origin "${branch}"
 }
 
