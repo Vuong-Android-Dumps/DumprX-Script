@@ -1295,14 +1295,14 @@ commit_and_push(){
 		"system"
 	)
 
-    echo "Adding apps..."
+    echo "Dumping apps..."
 	find -type f -name '*.apk' -size -100M -exec git add {} \;
 	echo "Commiting apps..."
 	git commit -sm "Add apps for ${description}" > /dev/null 2>&1
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 
 	for i in "${DIRS[@]}"; do
-	    echo "Adding ${i}..."
+	    echo "Dumping ${i}..."
 		[ -d "${i}" ] && find "${i}" -type f -size -100M -exec git add {} \;
 		[ -d system/"${i}" ] && find system/"${i}" -type f -size -100M -exec git add {} \;
 		[ -d system/system/"${i}" ] && find system/system/"${i}" -type f -size -100M -exec git add {} \;
@@ -1312,14 +1312,14 @@ commit_and_push(){
 		git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 	done
 
-    echo "Adding extras..."
+    echo "Dumping extras..."
 	git add .
 	find . -path './.git' -prune -o -type f -size +100M -exec git rm --cached {} \;
 	echo "Commiting extras..."
 	git commit -sm "Add extras for ${description}" > /dev/null 2>&1
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 
-	echo "Adding large files..."
+	echo "Dumping large files..."
 	for n in $(seq 6 6 60); do
 	    find . -path './.git' -prune -o -type f -size +100M -printf '%s %p\n' \
 		| sort -n \
