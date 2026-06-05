@@ -1320,7 +1320,7 @@ commit_and_push(){
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 
 	echo "Adding large files..."
-	for n in $(seq 6 6 54); do
+	for n in $(seq 6 6 60); do
 	    find . -path './.git' -prune -o -type f -size +100M -printf '%s %p\n' \
 		| sort -n \
 		| head -n ${n} \
@@ -1333,7 +1333,7 @@ commit_and_push(){
 
 	echo "Final commit..."
 	git add .
-	git commit -sm "Final commit for ${description}" > /dev/null 2>&1
+	git commit -sm "Final commit for ${description}"
 	git push -u origin "${branch}"
 }
 
