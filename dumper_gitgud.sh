@@ -1313,8 +1313,7 @@ commit_and_push(){
 	done
 
     echo "Dumping extras..."
-	git add .
-	find . -path './.git' -prune -o -type f -size +100M -exec git rm --cached {} \;
+	find . -path './.git' -prune -o -type f -size -100M -exec git add {} \;
 	echo "Commiting extras..."
 	git commit -sm "Add extras for ${description}" > /dev/null 2>&1
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
