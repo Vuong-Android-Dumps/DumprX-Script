@@ -1299,7 +1299,9 @@ commit_and_push(){
 	find -type f -name '*.apk' -size -100M -exec git add {} \;
 	echo "Commiting apps..."
 	git commit -sm "Add apps for ${description}" > /dev/null 2>&1
-	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
+	while true; do
+	    git push -u origin "${branch}" && break
+	done
 
 	for i in "${DIRS[@]}"; do
 	    echo "Dumping ${i}..."
@@ -1309,14 +1311,18 @@ commit_and_push(){
 		[ -d vendor/"${i}" ] && find vendor/"${i}" -type f -size -100M -exec git add {} \;
 		echo "Commiting ${i}..."
 		git commit -sm "Add ${i} for ${description}" > /dev/null 2>&1
-		git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
+		while true; do
+		    git push -u origin "${branch}" && break
+		done
 	done
 
     echo "Dumping extras..."
 	find . -path './.git' -prune -o -type f -size -100M -exec git add {} \;
 	echo "Commiting extras..."
 	git commit -sm "Add extras for ${description}" > /dev/null 2>&1
-	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
+	while true; do
+	    git push -u origin "${branch}" && break
+	done
 
 	echo "Dumping large files..."
 	for n in $(seq 6 6 60); do
@@ -1327,13 +1333,17 @@ commit_and_push(){
 		| xargs git add
 		echo "Commiting several large files..."
 		git commit -sm "Add several large files for ${description}" > /dev/null 2>&1
-		git push -u origin "${branch}"
+		while true; do
+		    git push -u origin "${branch}" && break
+		done
 	done
 
 	echo "Final commit..."
 	git add .
 	git commit -sm "Final commit for ${description}"
-	git push -u origin "${branch}"
+	while true; do
+	    git push -u origin "${branch}" && break
+	done
 }
 
 split_files(){
