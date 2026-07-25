@@ -1295,19 +1295,19 @@ commit_and_push(){
 		"system"
 	)
 
-	git lfs install > /dev/null 2>&1
+	git lfs install
 	[ -e ".gitattributes" ] || find . -type f -not -path ".git/*" -size +100M -exec git lfs track {} \;
 	[ -e ".gitattributes" ] && {
 	    echo "Setup Git LFS..."
 		git add ".gitattributes"
-		git commit -sm "Setup Git LFS" > /dev/null 2>&1
+		git commit -sm "Setup Git LFS" > /dev/null
 		git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 	}
 
     echo "Dumping apps..."
 	git add $(find -type f -name '*.apk')
 	echo "Commiting apps..."
-	git commit -sm "Add apps for ${description}" > /dev/null 2>&1
+	git commit -sm "Add apps for ${description}" > /dev/null
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 
 	for i in "${DIRS[@]}"; do
@@ -1317,14 +1317,14 @@ commit_and_push(){
 		[ -d system/system/"${i}" ] && git add system/system/"${i}"
 		[ -d vendor/"${i}" ] && git add vendor/"${i}"
 		echo "Commiting ${i}..."
-		git commit -sm "Add ${i} for ${description}" > /dev/null 2>&1
+		git commit -sm "Add ${i} for ${description}" > /dev/null
 		git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 	done
 
     echo "Dumping extras..."
 	git add .
 	echo "Commiting extras..."
-	git commit -sm "Add extras for ${description}" > /dev/null 2>&1
+	git commit -sm "Add extras for ${description}" > /dev/null
 	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
 }
 
