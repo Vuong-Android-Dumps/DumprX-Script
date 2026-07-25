@@ -1298,7 +1298,7 @@ commit_and_push(){
     echo "Dumping apps..."
 	find -type f -name '*.apk' -size -100M -exec git add {} \;
 	echo "Commiting apps..."
-	git commit -sm "Add apps for ${description}" > /dev/null 2>&1
+	git commit -sm "Add apps for ${description}" > /dev/null
 	while true; do
 	    git push -u origin "${branch}" && break
 	done
@@ -1310,7 +1310,7 @@ commit_and_push(){
 		[ -d system/system/"${i}" ] && find system/system/"${i}" -type f -size -100M -exec git add {} \;
 		[ -d vendor/"${i}" ] && find vendor/"${i}" -type f -size -100M -exec git add {} \;
 		echo "Commiting ${i}..."
-		git commit -sm "Add ${i} for ${description}" > /dev/null 2>&1
+		git commit -sm "Add ${i} for ${description}" > /dev/null
 		while true; do
 		    git push -u origin "${branch}" && break
 		done
@@ -1319,7 +1319,7 @@ commit_and_push(){
     echo "Dumping extras..."
 	find . -path './.git' -prune -o -type f -size -100M -exec git add {} \;
 	echo "Commiting extras..."
-	git commit -sm "Add extras for ${description}" > /dev/null 2>&1
+	git commit -sm "Add extras for ${description}" > /dev/null
 	while true; do
 	    git push -u origin "${branch}" && break
 	done
@@ -1332,7 +1332,7 @@ commit_and_push(){
 		| cut -d' ' -f2- \
 		| xargs git add
 		echo "Commiting several large files..."
-		git commit -sm "Add several large files for ${description}" > /dev/null 2>&1
+		git commit -sm "Add several large files for ${description}" > /dev/null
 		while true; do
 		    git push -u origin "${branch}" && break
 		done
