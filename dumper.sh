@@ -1301,14 +1301,18 @@ commit_and_push(){
 	    echo "Setup Git LFS..."
 		git add ".gitattributes"
 		git commit -sm "Setup Git LFS" > /dev/null
-		git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
+		while true; do
+		    git push -u origin "${branch}" && break
+		done
 	}
 
     echo "Dumping apps..."
 	git add $(find -type f -name '*.apk')
 	echo "Commiting apps..."
 	git commit -sm "Add apps for ${description}" > /dev/null
-	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
+	while true; do
+	    git push -u origin "${branch}" && break
+	done
 
 	for i in "${DIRS[@]}"; do
 	    echo "Dumping ${i}..."
@@ -1318,14 +1322,18 @@ commit_and_push(){
 		[ -d vendor/"${i}" ] && git add vendor/"${i}"
 		echo "Commiting ${i}..."
 		git commit -sm "Add ${i} for ${description}" > /dev/null
-		git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
+		while true; do
+		    git push -u origin "${branch}" && break
+		done
 	done
 
     echo "Dumping extras..."
 	git add .
 	echo "Commiting extras..."
 	git commit -sm "Add extras for ${description}" > /dev/null
-	git push -u origin "${branch}" || git push -u origin "${branch}" || git push -u origin "${branch}"
+	while true; do
+	    git push -u origin "${branch}" && break
+	done
 }
 
 split_files(){
