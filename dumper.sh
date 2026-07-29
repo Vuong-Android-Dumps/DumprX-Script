@@ -1307,9 +1307,9 @@ commit_and_push(){
 	git lfs install
 	[ -e ".gitattributes" ] || find . -type f -not -path ".git/*" -size +100M -exec git lfs track {} \;
 	[ -e ".gitattributes" ] && {
-	    echo "Setup Git LFS..."
+	    echo "Setting up Git LFS..."
 		git add ".gitattributes"
-		git commit -sm "${codename}: Setup Git LFS" > /dev/null
+		git commit -sm "${codename}: Setup Git LFS" >/dev/null
 		while true; do
 		    git push -u origin "${branch}" && break
 		done
@@ -1318,7 +1318,8 @@ commit_and_push(){
     echo "Dumping apps..."
 	git add $(find -type f -name '*.apk')
 	echo "Commiting apps..."
-	git commit -sm "${codename}: Add apps" -m "for ${description}" > /dev/null
+	git commit -sm "${codename}: Add apps" -m "for ${description}" >/dev/null
+	echo "Pushing apps..."
 	while true; do
 	    git push -u origin "${branch}" && break
 	done
@@ -1334,7 +1335,8 @@ commit_and_push(){
 		[ -f "${i}.img" ] && git add "${i}".img
 		[ -f "${i}.elf" ] && git add "${i}".elf
 		echo "Commiting ${i}..."
-		git commit -sm "${codename}: Add ${i}" -m "for ${description}" > /dev/null
+		git commit -sm "${codename}: Add ${i}" -m "for ${description}" >/dev/null
+		echo "Pushing ${i}..."
 		while true; do
 		    git push -u origin "${branch}" && break
 		done
@@ -1343,7 +1345,7 @@ commit_and_push(){
     echo "Dumping extras..."
 	git add .
 	echo "Commiting extras..."
-	git commit -sm "${codename}: Add extras" -m "for ${description}" > /dev/null
+	git commit -sm "${codename}: Add extras" -m "for ${description}" >/dev/null
 	while true; do
 	    git push -u origin "${branch}" && break
 	done
