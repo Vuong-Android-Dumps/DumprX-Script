@@ -1462,7 +1462,7 @@ elif [[ -s "${PROJECT_DIR}"/.gitlab_token ]]; then
 	if [ -f "${PROJECT_DIR}"/.gitlab_instance ]; then
 		GITLAB_INSTANCE=$(< "${PROJECT_DIR}"/.gitlab_instance)
 	else
-		GITLAB_INSTANCE="gitlab.com"
+		GITLAB_INSTANCE="gitgud.io"
 	fi
 	GITLAB_HOST="https://${GITLAB_INSTANCE}"
 
@@ -1478,8 +1478,8 @@ elif [[ -s "${PROJECT_DIR}"/.gitlab_token ]]; then
 	git checkout -b "${branch}" || { git checkout -b "${incremental}" && export branch="${incremental}"; }
 	find . \( -name "*sensetime*" -o -name "*.lic" \) | cut -d'/' -f'2-' >| .gitignore
 	[[ ! -s .gitignore ]] && rm .gitignore
-	[[ -z "$(git config --get user.email)" ]] && git config user.email "guptasushrut@gmail.com"
-	[[ -z "$(git config --get user.name)" ]] && git config user.name "Sushrut1101"
+	[[ -z "$(git config --get user.email)" ]] && git config user.email "vanvuong41429@gmail.com"
+	[[ -z "$(git config --get user.name)" ]] && git config user.name "VanVuong41429"
 
 	# Create Subgroup
 	GRP_ID=$(curl -s \
@@ -1541,11 +1541,11 @@ elif [[ -s "${PROJECT_DIR}"/.gitlab_token ]]; then
 	# Commit and Push
 	case "${DUMPRX_USE_SSH}" in
 		true|1)
-			git_prefix="git@${GITLAB_INSTANCE}:"
+			git_prefix="git@ssh.${GITLAB_INSTANCE}:"
 			method="SSH"
 			;;
 		*)
-			git_prefix="https://DumprX:${GITLAB_TOKEN}@${GITLAB_INSTANCE}/"
+			git_prefix="https://VanVuong41429:${GITLAB_TOKEN}@${GITLAB_INSTANCE}/"
 			method="HTTPS"
 			;;
 	esac
