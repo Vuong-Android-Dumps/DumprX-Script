@@ -1310,7 +1310,7 @@ commit_and_push(){
 	git config lfs.locksverify false
 	[ -e ".gitattributes" ] || find . -type f -not -path ".git/*" -size +100M -exec git lfs track {} \;
 	[ -e ".gitattributes" ] && {
-	    echo "Setting up Git LFS..."
+	    echo "[INFO] Setting up Git LFS..."
 		git add ".gitattributes"
 		git commit -sm "${codename}: Setup Git LFS" >/dev/null
 		while true; do
@@ -1320,9 +1320,8 @@ commit_and_push(){
 
     echo "Dumping apps..."
 	git add $(find -type f -name '*.apk')
-	echo "Commiting apps..."
 	git commit -sm "${codename}: Add apps" -m "for ${description}" >/dev/null
-	echo "Pushing apps..."
+	echo "[INFO] Pushing apps..."
 	while true; do
 	    git push -u origin "${branch}" && break
 	done
@@ -1337,9 +1336,8 @@ commit_and_push(){
 		[ -d vendor/"${i}" ] && git add vendor/"${i}"
 		[ -f "${i}.img" ] && git add "${i}".img
 		[ -f "${i}.elf" ] && git add "${i}".elf
-		echo "Commiting ${i}..."
 		git commit -sm "${codename}: Add ${i}" -m "for ${description}" >/dev/null
-		echo "Pushing ${i}..."
+		echo "[INFO] Pushing ${i}..."
 		while true; do
 		    git push -u origin "${branch}" && break
 		done
@@ -1347,8 +1345,8 @@ commit_and_push(){
 
     echo "Dumping extras..."
 	git add .
-	echo "Commiting extras..."
 	git commit -sm "${codename}: Add extras" -m "for ${description}" >/dev/null
+	echo "[INFO] Pushing extras..."
 	while true; do
 	    git push -u origin "${branch}" && break
 	done
