@@ -1468,8 +1468,8 @@ elif [[ -s "${PROJECT_DIR}"/.gitlab_token ]]; then
 	git checkout -b "${branch}" || { git checkout -b "${incremental}" && export branch="${incremental}"; }
 	find . \( -name "*sensetime*" -o -name "*.lic" \) | cut -d'/' -f'2-' >| .gitignore
 	[[ ! -s .gitignore ]] && rm .gitignore
-	[[ -z "$(git config --get user.email)" ]] && git config user.email "guptasushrut@gmail.com"
-	[[ -z "$(git config --get user.name)" ]] && git config user.name "Sushrut1101"
+	[[ -z "$(git config --get user.email)" ]] && git config user.email "vanvuong41429@gmail.com"
+	[[ -z "$(git config --get user.name)" ]] && git config user.name "VanVuong41429"
 
 	# Create Subgroup
 	GRP_ID=$(curl -s \
@@ -1535,7 +1535,7 @@ elif [[ -s "${PROJECT_DIR}"/.gitlab_token ]]; then
 			method="SSH"
 			;;
 		*)
-			git_prefix="https://DumprX:${GITLAB_TOKEN}@${GITLAB_INSTANCE}/"
+			git_prefix="https://VanVuong41429:${GITLAB_TOKEN}@${GITLAB_INSTANCE}/"
 			method="HTTPS"
 			;;
 	esac
