@@ -1306,7 +1306,6 @@ commit_and_push(){
 
 	git config http.postBuffer 524288000
 
-    echo "Dumping apps..."
 	find -type f -name '*.apk' -size -100M -exec git add {} \;
 	git commit -sm "${codename}: Add apps" -m "for ${description}" >/dev/null
 	echo "[INFO] Pushing apps..."
@@ -1317,13 +1316,12 @@ commit_and_push(){
 	[ -f "ikconfig" ] && git add "ikconfig"
 
 	for i in "${DIRS[@]}"; do
-	    echo "Dumping ${i}..."
 		[ -d "${i}" ] && find "${i}" -type f -size -100M -exec git add {} \;
 		[ -d system/"${i}" ] && find system/"${i}" -type f -size -100M -exec git add {} \;
 		[ -d system/system/"${i}" ] && find system/system/"${i}" -type f -size -100M -exec git add {} \;
 		[ -d vendor/"${i}" ] && find vendor/"${i}" -type f -size -100M -exec git add {} \;
-		[ -f "${i}.img" ] && git add "${i}".img
-		[ -f "${i}.elf" ] && git add "${i}".elf
+		[ -f "${i}.img" ] && find "${i}".img -type f -size -100M -exec git add {} \;
+		[ -f "${i}.elf" ] && find "${i}".elf -type f -size -100M -exec git add {} \;
 		git commit -sm "${codename}: Add ${i}" -m "for ${description}" >/dev/null
 		echo "[INFO] Pushing ${i}..."
 		while true; do
@@ -1331,7 +1329,6 @@ commit_and_push(){
 		done
 	done
 
-    echo "Dumping extras..."
 	find . -path './.git' -prune -o -type f -size -100M -exec git add {} \;
 	git commit -sm "${codename}: Add extras" -m "for ${description}" >/dev/null
 	echo "[INFO] Pushing extras..."
@@ -1339,15 +1336,14 @@ commit_and_push(){
 	    git push -u origin "${branch}" && break
 	done
 
-	echo "Dumping large files..."
 	for n in $(seq 6 6 60); do
 	    find . -path './.git' -prune -o -type f -size +100M -printf '%s %p\n' \
 		| sort -n \
 		| head -n ${n} \
 		| cut -d' ' -f2- \
 		| xargs git add
-		echo "Commiting several large files..."
-		git commit -sm "Add several large files for ${description}" > /dev/null
+		git commit -sm "${codename}: Add several large files" -m "for ${description}" >/dev/null
+		echo "[INFO] Pushing several large files..."
 		while true; do
 		    git push -u origin "${branch}" && break
 		done
@@ -1355,7 +1351,7 @@ commit_and_push(){
 
 	echo "Final commit..."
 	git add .
-	git commit -sm "Final commit for ${description}"
+	git commit -sm "${codename}: Final commit" -m "for ${description}" >/dev/null
 	while true; do
 	    git push -u origin "${branch}" && break
 	done
