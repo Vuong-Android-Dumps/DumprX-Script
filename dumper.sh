@@ -1318,7 +1318,6 @@ commit_and_push(){
 		done
 	}
 
-    echo "Dumping apps..."
 	git add $(find -type f -name '*.apk')
 	git commit -sm "${codename}: Add apps" -m "for ${description}" >/dev/null
 	echo "[INFO] Pushing apps..."
@@ -1329,7 +1328,6 @@ commit_and_push(){
 	[ -f "ikconfig" ] && git add "ikconfig"
 
 	for i in "${DIRS[@]}"; do
-	    echo "Dumping ${i}..."
 		[ -d "${i}" ] && git add "${i}"
 		[ -d system/"${i}" ] && git add system/"${i}"
 		[ -d system/system/"${i}" ] && git add system/system/"${i}"
@@ -1343,7 +1341,6 @@ commit_and_push(){
 		done
 	done
 
-    echo "Dumping extras..."
 	git add .
 	git commit -sm "${codename}: Add extras" -m "for ${description}" >/dev/null
 	echo "[INFO] Pushing extras..."
