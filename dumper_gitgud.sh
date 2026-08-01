@@ -1287,13 +1287,6 @@ rm -rf "${TMPDIR}" 2>/dev/null
 
 commit_and_push(){
 	local DIRS=(
-		"boot"
-		"recovery"
-		"vendor_boot"
-		"init_boot"
-		"dtbo"
-		"aosp-device-tree"
-		"twrp-device-tree"
 		"system_ext"
 		"product"
 		"system_dlkm"
@@ -1314,6 +1307,17 @@ commit_and_push(){
 	done
 
 	[ -f "ikconfig" ] && git add "ikconfig"
+
+	for i in boot recovery vendor_boot init_boot dtbo aosp-device-tree twrp-device-tree; do
+	    [ -d "${i}" ] && find "${i}" -type f -size -100M -exec git add {} \;
+		[ -f "${i}.img" ] && find "${i}".img -type f -size -100M -exec git add {} \;
+		[ -f "${i}.elf" ] && find "${i}".elf -type f -size -100M -exec git add {} \;
+		git commit -sm "${codename}: Add ${i}" -m "for ${description}" >/dev/null
+	done
+
+	while true; do
+	    git push -u origin "${branch}" && break
+	done
 
 	for i in "${DIRS[@]}"; do
 		[ -d "${i}" ] && find "${i}" -type f -size -100M -exec git add {} \;
