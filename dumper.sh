@@ -1158,7 +1158,7 @@ branch=${branch:-$(echo "$description" | tr ' ' '-')}
 
 if [[ "$PUSH_TO_GITLAB" = true ]]; then
 	rm -rf .github_token
-	repo=$(printf "${brand}" | tr '[:upper:]' '[:lower:]' && echo -e "/${codename}")
+	repo=$(printf "${brand}" | tr '[:upper:]' '[:lower:]' && echo -e "/${codename}_${RANDOM}")
 else
 	rm -rf .gitlab_token
 	repo=$(echo "${brand}"_"${codename}"_dump | tr '[:upper:]' '[:lower:]')
@@ -1506,7 +1506,7 @@ elif [[ -s "${PROJECT_DIR}"/.gitlab_token ]]; then
         --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
         --header "Content-Type: application/json" \
         --data "{
-            \"name\": \"${codename}\",
+            \"name\": \"${codename}_${RANDOM}\",
             \"namespace_id\": \"${SUBGRP_ID}\",
             \"visibility\": \"public\"
         }" \
@@ -1524,7 +1524,7 @@ elif [[ -s "${PROJECT_DIR}"/.gitlab_token ]]; then
     		| jq -r --arg name "$proj" '.[] | select(.path == $name) | .id'
 	}
 
-	PROJECT_ID=$(get_gitlab_project_id "${codename}" "${SUBGRP_ID}")
+	PROJECT_ID=$(get_gitlab_project_id "${codename}_${RANDOM}" "${SUBGRP_ID}")
 
 	# Commit and Push
 	case "${DUMPRX_USE_SSH}" in
