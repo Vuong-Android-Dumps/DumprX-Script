@@ -1288,13 +1288,6 @@ rm -rf "${TMPDIR}" 2>/dev/null
 
 commit_and_push(){
 	local DIRS=(
-		"boot"
-		"recovery"
-		"vendor_boot"
-		"init_boot"
-		"dtbo"
-		"aosp-device-tree"
-		"twrp-device-tree"
 		"system_ext"
 		"product"
 		"system_dlkm"
@@ -1326,8 +1319,6 @@ commit_and_push(){
 	    git push -u origin "${branch}" && break
 	done
 
-	[ -f "ikconfig" ] && git add "ikconfig"
-
 	for i in "${DIRS[@]}"; do
 		[ -d "${i}" ] && git add "${i}"
 		[ -d system/"${i}" ] && git add system/"${i}"
@@ -1340,6 +1331,18 @@ commit_and_push(){
 		while true; do
 		    git push -u origin "${branch}" && break
 		done
+	done
+
+	[ -f "ikconfig" ] && git add "ikconfig"
+
+	for i in boot recovery vendor_boot init_boot dtbo aosp-device-tree twrp-device-tree; do
+	    [ -d "${i}" ] && git add "${i}"
+		[ -d system/"${i}" ] && git add system/"${i}"
+		[ -d system/system/"${i}" ] && git add system/system/"${i}"
+		[ -d vendor/"${i}" ] && git add vendor/"${i}"
+		[ -f "${i}.img" ] && git add "${i}".img
+		[ -f "${i}.elf" ] && git add "${i}".elf
+		git commit -sm "${codename}: Add ${i}" -m "for ${description}" >/dev/null
 	done
 
 	git add .
