@@ -1324,8 +1324,6 @@ commit_and_push(){
 		[ -d system/"${i}" ] && git add system/"${i}"
 		[ -d system/system/"${i}" ] && git add system/system/"${i}"
 		[ -d vendor/"${i}" ] && git add vendor/"${i}"
-		[ -f "${i}.img" ] && git add "${i}".img
-		[ -f "${i}.elf" ] && git add "${i}".elf
 		git commit -sm "${codename}: Add ${i}" -m "for ${description}" >/dev/null
 		echo "[INFO] Pushing ${i}..."
 		while true; do
@@ -1337,9 +1335,6 @@ commit_and_push(){
 
 	for i in boot recovery vendor_boot init_boot dtbo aosp-device-tree twrp-device-tree; do
 	    [ -d "${i}" ] && git add "${i}"
-		[ -d system/"${i}" ] && git add system/"${i}"
-		[ -d system/system/"${i}" ] && git add system/system/"${i}"
-		[ -d vendor/"${i}" ] && git add vendor/"${i}"
 		[ -f "${i}.img" ] && git add "${i}".img
 		[ -f "${i}.elf" ] && git add "${i}".elf
 		git commit -sm "${codename}: Add ${i}" -m "for ${description}" >/dev/null
