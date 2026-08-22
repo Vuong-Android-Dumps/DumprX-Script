@@ -134,7 +134,7 @@ if ! command -v uvx > /dev/null 2>&1; then
 	export PATH="${HOME}/.local/bin:${PATH}"
 fi
 
-RANDOM_NUMBER=$(shuf -i 10000-99999 -n 1)
+RANDOM_NUMBER=$(shuf -i 00000-99999 -n 1)
 
 # Set Names of Downloader Utility Programs
 MEGAMEDIADRIVE_DL="${UTILSDIR}"/downloaders/mega-media-drive_dl.sh
@@ -1329,15 +1329,6 @@ commit_and_push(){
 		while true; do
 		    git push -u origin "${branch}" && break
 		done
-	done
-
-	[ -f "ikconfig" ] && git add "ikconfig"
-
-	for i in boot recovery vendor_boot init_boot dtbo aosp-device-tree twrp-device-tree; do
-	    [ -d "${i}" ] && git add "${i}"
-		[ -f "${i}.img" ] && git add "${i}".img
-		[ -f "${i}.elf" ] && git add "${i}".elf
-		git commit -sm "${codename}: Add ${i}" -m "for ${description}" >/dev/null
 	done
 
 	git add .
