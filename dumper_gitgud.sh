@@ -134,7 +134,7 @@ if ! command -v uvx > /dev/null 2>&1; then
 	export PATH="${HOME}/.local/bin:${PATH}"
 fi
 
-RANDOM_NUMBER=$(shuf -i 10000-99999 -n 1)
+RANDOM_NUMBER=$(shuf -i 00000-99999 -n 1)
 
 # Set Names of Downloader Utility Programs
 MEGAMEDIADRIVE_DL="${UTILSDIR}"/downloaders/mega-media-drive_dl.sh
