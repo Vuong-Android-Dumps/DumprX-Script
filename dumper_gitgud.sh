@@ -1290,10 +1290,7 @@ commit_and_push(){
 	local DIRS=(
 		"system_ext"
 		"product"
-		"system_dlkm"
 		"odm"
-		"odm_dlkm"
-		"vendor_dlkm"
 		"vendor"
 		"system"
 	)
