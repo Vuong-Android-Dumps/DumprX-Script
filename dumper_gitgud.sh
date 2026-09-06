@@ -1303,10 +1303,10 @@ commit_and_push(){
 	done
 
 	for i in "${DIRS[@]}"; do
-		[ -d "${i}" ] && find "${i}" -type f -size -100M -exec git add {} \;
-		[ -d system/"${i}" ] && find system/"${i}" -type f -size -100M -exec git add {} \;
-		[ -d system/system/"${i}" ] && find system/system/"${i}" -type f -size -100M -exec git add {} \;
-		[ -d vendor/"${i}" ] && find vendor/"${i}" -type f -size -100M -exec git add {} \;
+		[ -d "${i}" ] && find "${i}" -size -100M -exec git add {} \;
+		[ -d system/"${i}" ] && find system/"${i}" -size -100M -exec git add {} \;
+		[ -d system/system/"${i}" ] && find system/system/"${i}" -size -100M -exec git add {} \;
+		[ -d vendor/"${i}" ] && find vendor/"${i}" -size -100M -exec git add {} \;
 		git commit -sm "${codename}: Add ${i}" -m "for ${description}" >/dev/null
 		echo "[INFO] Pushing ${i}..."
 		while true; do
@@ -1314,7 +1314,7 @@ commit_and_push(){
 		done
 	done
 
-	find . -path './.git' -prune -o -type f -size -100M -exec git add {} \;
+	find . -path './.git' -prune -o -size -100M -exec git add {} \;
 	git commit -sm "${codename}: Add extras" -m "for ${description}" >/dev/null
 	echo "[INFO] Pushing extras..."
 	while true; do
