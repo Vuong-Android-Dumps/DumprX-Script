@@ -818,7 +818,7 @@ if [[ -f boot.img ]]; then
     # Extract 'ikconfig'
     echo "Extracting 'ikconfig'..."
     ${EXTRACT_IKCONFIG} boot.img > ikconfig || {
-        echo "[ERROR] Failed to generate 'ikconfig'"
+        echo "[ERROR] Failed to generate 'ikconfig'" && exit 1
     }
 
     # Generate non-stack symbols
