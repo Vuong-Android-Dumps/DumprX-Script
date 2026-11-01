@@ -817,7 +817,7 @@ done
 if [[ -f boot.img ]]; then
     # Extract 'ikconfig'
     echo "Extracting 'ikconfig'..."
-    while true; do; ${EXTRACT_IKCONFIG} boot.img > ikconfig && break; done || {
+    while true; do ${EXTRACT_IKCONFIG} boot.img > ikconfig && break; done || {
         echo "[ERROR] Failed to generate 'ikconfig'"
     }
 
