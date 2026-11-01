@@ -1303,10 +1303,10 @@ commit_and_push(){
 	done
 
 	for i in "${DIRS[@]}"; do
-		[ -d "${i}" ] && find "${i}" -type f,l -size -100000002c -exec git add {} \;
-		[ -d system/"${i}" ] && find system/"${i}" -type f,l -size -100000002c -exec git add {} \;
-		[ -d system/system/"${i}" ] && find system/system/"${i}" -type f,l -size -100000002c -exec git add {} \;
-		[ -d vendor/"${i}" ] && find vendor/"${i}" -type f,l -size -100000002c -exec git add {} \;
+		[ -d "${i}" ] && find "${i}" -type f,l -size -104857601c -exec git add {} \;
+		[ -d system/"${i}" ] && find system/"${i}" -type f,l -size -104857601c -exec git add {} \;
+		[ -d system/system/"${i}" ] && find system/system/"${i}" -type f,l -size -104857601c -exec git add {} \;
+		[ -d vendor/"${i}" ] && find vendor/"${i}" -type f,l -size -104857601c -exec git add {} \;
 		git commit -sm "${codename}: Add ${i}" -m "for ${description}" >/dev/null
 		echo "[INFO] Pushing ${i}..."
 		while true; do
@@ -1314,7 +1314,7 @@ commit_and_push(){
 		done
 	done
 
-	find . -path './.git' -prune -o -type f,l -size -100000002c -exec git add {} \;
+	find . -path './.git' -prune -o -type f,l -size -104857601c -exec git add {} \;
 	git commit -sm "${codename}: Add extras" -m "for ${description}" >/dev/null
 	echo "[INFO] Pushing extras..."
 	while true; do
@@ -1322,7 +1322,7 @@ commit_and_push(){
 	done
 
 	for n in $(seq 6 6 60); do
-	    find . -path './.git' -prune -o -type f -size +100000000c -printf '%s %p\n' \
+	    find . -path './.git' -prune -o -type f -size +104857599c -printf '%s %p\n' \
 		| sort -n \
 		| head -n ${n} \
 		| cut -d' ' -f2- \
