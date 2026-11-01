@@ -1295,7 +1295,7 @@ commit_and_push(){
 
 	git config http.postBuffer 524288000
 
-	find -type f -name '*.apk' -size -100000002c -exec git add {} \;
+	find -type f -name '*.apk' -size -104857601c -exec git add {} \;
 	git commit -sm "${codename}: Add apps" -m "for ${description}" >/dev/null
 	echo "[INFO] Pushing apps..."
 	while true; do
@@ -1452,7 +1452,7 @@ elif [[ -s "${PROJECT_DIR}"/.gitlab_token ]]; then
 
 	# Remove The Journal File Inside System/Vendor
 	find . -mindepth 2 -type d -name "\[SYS\]" -exec rm -rf {} \; 2>/dev/null
-	find . -path './.git' -prune -o -type f -size +100000000c -printf '%s %p\n' | sort -n | cut -d' ' -f2- | xargs du -ch
+	find . -path './.git' -prune -o -type f -size +104857599c -printf '%s %p\n' | sort -n | cut -d' ' -f2- | xargs du -ch
 	printf "\nFinal Repository Should Look Like...\n" && ls -lAog
 	printf "\n\nStarting Git Init...\n"
 	git init		# Insure Your GitLab Authorization Before Running This Script
